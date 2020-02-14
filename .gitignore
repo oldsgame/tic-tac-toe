@@ -102,3 +102,8 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Commit file
+[Nn]otes.txt
+[Cc]ommit[Mm]essage*
+[Cc]ommit[Mm]sg*

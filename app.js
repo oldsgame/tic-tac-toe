@@ -41,19 +41,19 @@ ref[position] = '1';
 
     currentPlayer.innerHTML = 'Jogador atual: '  + (player1 ? '☕' : '☘️');
 
-    function handleClick(celula) {
-        if (stop || !!celula.innerHTML) {
+    function handleClick() {
+        if (stop || !!this.innerHTML) {
             return;
         }
 
-        const position = parseInt(celula.id);
+        const position = parseInt(this.id);
 
         let currentPositions = player1 ? positions1 : positions2;
         currentPositions[position] = '1';
 
-        celula.innerHTML = player1 ? '☕' : '☘️';
+        this.innerHTML = player1 ? '☕' : '☘️';
 
-        checkResult(positions1, positions2, celula.innerHTML);
+        checkResult(positions1, positions2, this.innerHTML);
 
         player1 = !player1;
 

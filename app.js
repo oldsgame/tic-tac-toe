@@ -38,7 +38,7 @@ ref[position] = '1';
     const winnerMessage = document.getElementById('winnerMessage');
 
     function handleClick(celula) {
-        if (stop) {
+        if (stop || !!celula.innerHTML) {
             return;
         }
 

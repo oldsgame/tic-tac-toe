@@ -1,12 +1,16 @@
 (function() {
-    let player = true;
+  let first_player = true;
 
-    function handleClick(celula) {
-        celula.innerHTML = player ? "☕" : "☘️";
-        player = !player;
+  function handleClick() {
+    if (!this.innerHTML) {
+      this.innerHTML = first_player ? "☕" : "☘️";
+      first_player = !first_player;
     }
+  }
 
-    document.querySelectorAll('td').forEach(celula => {
-        celula.onclick = () => handleClick(celula);
-    });
+  function bindEvents(cell) {
+    cell.onclick = handleClick;
+  }
+
+  document.querySelectorAll('td').forEach(bindEvents);
 })();

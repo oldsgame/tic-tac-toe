@@ -14,6 +14,7 @@ td {
   font-size: 3em;
   text-align: center;
   cursor: pointer;
+  user-select: none;
 }
 
 td ~ td {

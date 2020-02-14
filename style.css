@@ -27,6 +27,22 @@ tr ~ tr {
   border-top: 5px solid black;
 }
 
-#buttonNewGame{
+#buttonNewGame {
   display: none;
+  background: #0c6909;
+  border-radius: 4px;
+  font-size: 16px;
+  padding: 0 20px;
+  margin-top: 10px;
+  color: #fff;
+  font-weight: bold;
+  border: 0;
+  cursor: pointer;
+  width: 120px;
+  height: 30px;
+  opacity: 0.9;
+}
+
+#buttonNewGame:hover {
+  opacity: 1;
 }

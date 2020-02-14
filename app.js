@@ -36,6 +36,9 @@ ref[position] = '1';
     let positions1 = '000000000'.split(''); // 9 positions. From 0 to 8.
     let positions2 = '000000000'.split('');
     const winnerMessage = document.getElementById('winnerMessage');
+    const currentPlayer = document.getElementById('currentPlayer');
+
+    currentPlayer.innerHTML = "Jogador atual: " + (player1 ? "☕" : "☘️");
 
     function handleClick(celula) {
         if (stop || !!celula.innerHTML) {
@@ -52,6 +55,8 @@ ref[position] = '1';
         checkResult(positions1, positions2, celula.innerHTML);
 
         player1 = !player1;
+
+        currentPlayer.innerHTML = "Jogador atual: " + (player1 ? "☕" : "☘️");
     }
 
     function checkResult(positions1, positions2, currentPlayer) {

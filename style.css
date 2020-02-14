@@ -24,3 +24,7 @@ td ~ td {
 tr ~ tr {
   border-top: 5px solid black;
 }
+
+#buttonNewGame{
+  display: none;
+}

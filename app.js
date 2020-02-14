@@ -27,7 +27,7 @@ ref[position] = '1';
 
 */
 
-(function() {   
+(function() {
     const DRAW_VALUE = 511
 
     let player1 = true;
@@ -37,8 +37,9 @@ ref[position] = '1';
     let positions2 = '000000000'.split('');
     const winnerMessage = document.getElementById('winnerMessage');
     const currentPlayer = document.getElementById('currentPlayer');
+    const buttonNewGame = document.getElementById('buttonNewGame');
 
-    currentPlayer.innerHTML = "Jogador atual: " + (player1 ? "☕" : "☘️");
+    currentPlayer.innerHTML = 'Jogador atual: '  + (player1 ? '☕' : '☘️');
 
     function handleClick(celula) {
         if (stop || !!celula.innerHTML) {
@@ -50,13 +51,17 @@ ref[position] = '1';
         let currentPositions = player1 ? positions1 : positions2;
         currentPositions[position] = '1';
 
-        celula.innerHTML = player1 ? "☕" : "☘️";
+        celula.innerHTML = player1 ? '☕' : '☘️';
 
         checkResult(positions1, positions2, celula.innerHTML);
 
         player1 = !player1;
 
-        currentPlayer.innerHTML = "Jogador atual: " + (player1 ? "☕" : "☘️");
+        currentPlayer.innerHTML = 'Jogador atual: ' + (player1 ? '☕' : '☘️');
+
+        if(stop) {
+            buttonNewGame.style.display = 'block';
+        }
     }
 
     function checkResult(positions1, positions2, currentPlayer) {
@@ -83,6 +88,20 @@ ref[position] = '1';
             }
         }
     }
+
+    buttonNewGame.onclick = () => {
+        stop = false;
+        player1 = true;
+        positions1 = '000000000'.split('');
+        positions2 = '000000000'.split('');
+        currentPlayer.innerHTML = 'Jogador atual: ' + (player1 ? '☕' : '☘️');
+        winnerMessage.innerHTML = '';
+        buttonNewGame.style.display = 'none';
+
+        document.querySelectorAll('td').forEach(celula => {
+            celula.innerHTML = '';
+        });
+    };
 
   function bindEvents(cell) {
     cell.onclick = handleClick;

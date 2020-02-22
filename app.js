@@ -99,13 +99,10 @@ ref[position] = '1';
 				} else {
 					winnerMessage.innerHTML = 'Empate!';
 				}
+				buttonNewGame.style.display = 'block';
 				updateView();
 				return;
 			}
-		}
-
-		if(stop) {
-			buttonNewGame.style.display = 'block';
 		}
 	}
 
@@ -131,7 +128,6 @@ ref[position] = '1';
 		player = true;
 		board1 = 0;
 		board2 = 0;
-		currentPlayerHTML.innerHTML = "Proximo a jogar: " + player[currentPlayer];
 		winnerMessage.innerHTML = '';
 		buttonNewGame.style.display = 'none';
 
@@ -154,7 +150,7 @@ ref[position] = '1';
 			if((board & pos) ^ pos) {
 				board1 |= pos; // Marca a posição livre
 				let score = minimax(board1, board2, minTurn); // Prox turno é MIN
-				board1 ^= pos; // Desmarca a posição 
+				board1 &= ~pos; // Desmarca a posição
 				if (score > bestScore) {
 					bestScore = score;
 					move = pos;
@@ -180,7 +176,7 @@ ref[position] = '1';
 				if((board & pos) ^ pos) {
 					board1 |= pos; // Marca a posição livre
 					let score = minimax(board1, board2, minTurn);
-					board1 ^= pos; // Desmarca a posição livre
+					board1 &= ~pos; // Desmarca a posição
 					bestScore = Math.max(score, bestScore);
 				}
 
@@ -194,7 +190,7 @@ ref[position] = '1';
 				if((board & pos) ^ pos) {
 					board2 |= pos; // Marca a posição livre
 					let score = minimax(board1, board2, maxTurn);
-					board2 ^= pos; // Desmarca a posição livre
+					board2 &= ~pos; // Desmarca a posição
 					bestScore = Math.min(score, bestScore);
 				}
 

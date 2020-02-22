@@ -1,3 +1,4 @@
+
 /*
 # posições no jogo
 0 1 2
@@ -28,84 +29,179 @@ ref[position] = '1';
 */
 
 (function() {
-    const DRAW_VALUE = 511
+	let scores = {
+		MAX: 100,
+		MIN: -100,
+		TIE: 0
+	};
 
-    let player1 = true;
-    let stop = false;
-    const victoryNumbers = [448, 56, 7, 292, 146, 73, 273, 84];
-    let positions1 = '000000000'.split(''); // 9 positions. From 0 to 8.
-    let positions2 = '000000000'.split('');
-    const winnerMessage = document.getElementById('winnerMessage');
-    const currentPlayer = document.getElementById('currentPlayer');
-    const buttonNewGame = document.getElementById('buttonNewGame');
+	let player = {
+		MAX: '☕',
+		MIN: '☘️'
+	}
 
-    currentPlayer.innerHTML = 'Jogador atual: '  + (player1 ? '☕' : '☘️');
+	const DRAW_VALUE = 511
 
-    function handleClick() {
-        if (stop || !!this.innerHTML) {
-            return;
-        }
+	let player1 = 'MAX';
+	let player2 = 'MIN';
+	let currentPlayer = player1;
+	let maxTurn = true;
+	let minTurn = false;
 
-        const position = parseInt(this.id);
+	let stop = false;
+	const victoryNumbers = [448, 56, 7, 292, 146, 73, 273, 84];
+	let board1 = 0;
+	let board2 = 0;
 
-        let currentPositions = player1 ? positions1 : positions2;
-        currentPositions[position] = '1';
+	const winnerMessage = document.getElementById('winnerMessage');
+	const currentPlayerHTML = document.getElementById('currentPlayer');
+	const buttonNewGame = document.getElementById('buttonNewGame');
+	botJoga();
 
-        this.innerHTML = player1 ? '☕' : '☘️';
+	function trocaTurno() {
+		currentPlayer = (currentPlayer == player1 ? player2 : player1);
+		currentPlayerHTML.innerHTML = "Proximo a jogar: " + player[currentPlayer];
+	}
 
-        checkResult(positions1, positions2, this.innerHTML);
+	function updateView() {
+		for(let i = 8; i >= 0; --i) {
+			let pos = (1 << i);
+			if((board1 & pos)) {
+				document.getElementById((8-i).toString(10)).innerHTML = '☕';
+			}
+			if((board2 & pos)) {
+				document.getElementById((8-i).toString(10)).innerHTML = '☘️';
+			}
+		}
+	}
 
-        player1 = !player1;
+	function handleClick() {
+		if (stop) {
+			return;
+		}
 
-        currentPlayer.innerHTML = 'Jogador atual: ' + (player1 ? '☕' : '☘️');
+		let board = board1 | board2;
+		const position = (256 >> parseInt(this.id));
+		if((board & position) ^ position) {
+			if(currentPlayer == player1) {
+				board1 |= position;
+			} else {
+				board2 |= position; 
+			}
+			updateView();
+			trocaTurno();			
+			botJoga();
+			let result = checkResult(board1, board2); 
+			if (result !== null) {
+				if(result !== 'TIE') {
+					winnerMessage.innerHTML = player[result] + ' Venceu!';
+					stop = true;
+				} else {
+					winnerMessage.innerHTML = 'Empate!';
+				}
+				updateView();
+				return;
+			}
+		}
 
-        if(stop) {
-            buttonNewGame.style.display = 'block';
-        }
-    }
+		if(stop) {
+			buttonNewGame.style.display = 'block';
+		}
+	}
 
-    function checkResult(positions1, positions2, currentPlayer) {
-        let playerPositions = player1 ? positions1 : positions2;
-        const refValue = parseInt(playerPositions.join(''), 2);
+	function checkResult(board1, board2) {
+		let winner = null;
 
-        const hasWinner = victoryNumbers.some((value) => (value & refValue) === value);
+		const player1Win = victoryNumbers.some((value) => (value & board1) === value);
+		const player2Win = victoryNumbers.some((value) => (value & board2) === value);
 
-        if (hasWinner) {
-            winnerMessage.innerHTML = currentPlayer + ' venceu!';
-            stop = true;
-        }
-        else
-        {
-            const binPositions1 = parseInt(positions1.join(''), 2);
-            const binPositions2 = parseInt(positions2.join(''), 2);
+		if (player1Win || player2Win) { //alguem venceu
+			winner = (player1Win ? player1 : player2);
+		} else {
+			if ((board1 | board2) === DRAW_VALUE)
+			{
+				return 'TIE';
+			}
+		}
+		return winner;
+	}
 
-            const isDraw = ((binPositions1 | binPositions2) === DRAW_VALUE);
+	buttonNewGame.onclick = () => {
+		stop = false;
+		player = true;
+		board1 = 0;
+		board2 = 0;
+		currentPlayerHTML.innerHTML = "Proximo a jogar: " + player[currentPlayer];
+		winnerMessage.innerHTML = '';
+		buttonNewGame.style.display = 'none';
 
-            if (isDraw)
-            {
-                winnerMessage.innerHTML = ' Empate!';
-                stop = true;
-            }
-        }
-    }
+		document.querySelectorAll('td').forEach(celula => {
+			celula.innerHTML = '';
+		});
+	};
 
-    buttonNewGame.onclick = () => {
-        stop = false;
-        player1 = true;
-        positions1 = '000000000'.split('');
-        positions2 = '000000000'.split('');
-        currentPlayer.innerHTML = 'Jogador atual: ' + (player1 ? '☕' : '☘️');
-        winnerMessage.innerHTML = '';
-        buttonNewGame.style.display = 'none';
+	function bindEvents(cell) {
+		cell.onclick = handleClick;
+	}
 
-        document.querySelectorAll('td').forEach(celula => {
-            celula.innerHTML = '';
-        });
-    };
+	function botJoga() {
+		// O primeiro que joga é o MAX 
+		let bestScore = -Infinity;
+		let move;
+		let board = board1 | board2;
+		for(let i = 8; i >= 0; --i) {
+			let pos = (1 << i);
+			if((board & pos) ^ pos) {
+				board1 |= pos; // Marca a posição livre
+				let score = minimax(board1, board2, minTurn); // Prox turno é MIN
+				board1 ^= pos; // Desmarca a posição 
+				if (score > bestScore) {
+					bestScore = score;
+					move = pos;
+				}
+			}
+		}
+		board1 |= move; // Marca a posição de melhor score
+		trocaTurno();
+		updateView();
+	}
 
-  function bindEvents(cell) {
-    cell.onclick = handleClick;
-  }
+	function minimax(board1, board2, isMax) {
+		let result = checkResult(board1, board2);
+		if (result !== null) {
+			return scores[result];
+		}
 
-  document.querySelectorAll('td').forEach(bindEvents);
+		if (isMax) {
+			let bestScore = -Infinity;
+			let board = board1 | board2;
+			for(let i = 8; i >= 0; --i) {
+				let pos = (1 << i);
+				if((board & pos) ^ pos) {
+					board1 |= pos; // Marca a posição livre
+					let score = minimax(board1, board2, minTurn);
+					board1 ^= pos; // Desmarca a posição livre
+					bestScore = Math.max(score, bestScore);
+				}
+
+			}
+			return bestScore;
+		} else {
+			let bestScore = Infinity;
+			let board = board1 | board2;
+			for(let i = 8; i >= 0; --i) {
+				let pos = (1 << i);
+				if((board & pos) ^ pos) {
+					board2 |= pos; // Marca a posição livre
+					let score = minimax(board1, board2, maxTurn);
+					board2 ^= pos; // Desmarca a posição livre
+					bestScore = Math.min(score, bestScore);
+				}
+
+			}
+			return bestScore;
+		}
+	}
+
+	document.querySelectorAll('td').forEach(bindEvents);
 })();

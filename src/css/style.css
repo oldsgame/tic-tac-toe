@@ -4,6 +4,7 @@ body {
     align-items: center;
     justify-content: center;
     font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
 }
 
 .btn {
@@ -29,42 +30,37 @@ header {
     justify-content: space-between;
 }
 
-header button {
+header img {
     display: none;
-    border: 0;
-    background: none;
     cursor: pointer;
-    font-size: 25px;
     margin-right: 16px;
-    outline: 0;
     border-radius: 50%;
     transition: background 0.2s;
+    width: 32px;
+    height: 32px;
 }
 
-header button:hover {
+header img:hover {
     background: #f1f2f3;
 }
 
 .page {
     opacity: 0;
-}
-
-#home-page button ~ button {
-    margin-left: 16px;
-}
-
-#game-page {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 
-table {
+#home-page button ~ button {
+    margin-left: 16px;
+}
+
+#game-page table {
     border-collapse: collapse;
 }
 
-td {
+#game-page table td {
     width: 100px;
     height: 100px;
     font-size: 3em;
@@ -73,10 +69,46 @@ td {
     user-select: none;
 }
 
-td ~ td {
+#game-page table td ~ td {
     border-left: 5px solid black;
 }
 
-tr ~ tr {
+#game-page table tr ~ tr {
     border-top: 5px solid black;
+}
+
+@media (max-width: 420px) {
+    h1 {
+        font-size: 24px;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    .btn {
+        height: 44px;
+    }
+
+    #home-page button {
+        width: 80vw;
+    }
+
+    #home-page #actions {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #home-page button ~ button {
+        margin-top: 16px;
+        margin-left: 0;
+    }
+
+    #game-page table td {
+        height: 80px;
+        width: 80px;
+        font-size: 2em;
+    }
 }

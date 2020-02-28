@@ -16,6 +16,12 @@ export default function createEventListener(navigation, game) {
     };
 
     // Game page
+    document.querySelectorAll('td').forEach(cell => {
+        cell.onclick = () => {
+            game.play(parseInt(cell.id));
+        };
+    });
+
     document.getElementById('buttonNewGame').onclick = () => {
         game.restart();
     };

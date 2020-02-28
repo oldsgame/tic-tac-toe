@@ -3,3 +3,10 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Commit file
+[Nn]otes.txt
+[Cc]ommit[Mm]essage*
+[Cc]ommit[Mm]sg*
+[Cc]ommit[-_][Mm]essage*
+[Cc]ommit[-_][Mm]sg*

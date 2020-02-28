@@ -44,12 +44,13 @@ export default function createGame() {
 
     function play(id, isBot = false) {
         if (state.isEndgame) {
-            return;
+            return false;
         }
 
         const board = state.board1 | state.board2;
         const position = 256 >> id;
 
+        // if is a legal move
         if ((board & position) ^ position) {
             state[state.isPlayer1 ? 'board1' : 'board2'] |= position;
             state.isPlayer1 = !state.isPlayer1;
@@ -60,9 +61,13 @@ export default function createGame() {
             if (state.mode === 'H2B' && !isBot) {
                 playBot();
             }
+        } else {
+            return false;
         }
 
         render(state);
+
+        return true;
     }
 
     function playBot() {
@@ -188,6 +193,7 @@ export default function createGame() {
         state,
         setMode,
         restart,
-        play
+        play,
+        render
     };
 }

@@ -7,10 +7,12 @@ export default function createNavigation() {
         for (let page of PAGES) {
             const style = document.getElementById(page).style;
             if (page === url) {
+                style.display = 'block';
                 style.opacity = '1';
                 style.height = 'fit-content';
                 style.zIndex = '100';
             } else {
+                style.display = 'none';
                 style.opacity = '0';
                 style.height = '0px';
                 style.zIndex = '0';
